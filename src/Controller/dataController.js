@@ -10,6 +10,14 @@ module.exports =
             date,
         });
         return res.json(Data);
+    },
+    async index(req,res){
+        const Data = await data.find();
+        return res.json(Data)
+    },
+    async show(req,res){
+        const id = req.query;
+        const Data = await data.find(id);
+        return res.json(Data);
     }
- 
-};
+}
