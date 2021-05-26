@@ -1,5 +1,7 @@
 const data = require('../models/data');
 
+
+
 module.exports = 
 {
     async store(req,res){

@@ -1,11 +1,9 @@
-const SerialPort = require('serialport')   
-const Readline = SerialPort.parsers.Readline;
-
-const port = new SerialPort('COM2',{
-     baudRate: 9600 
+const SerialPort = require('serialport')
+const Readline = require('@serialport/parser-readline')
+const port = new SerialPort('COM5',{
+    baudRate: 9600 
     });
+const parser = new Readline({ delimiter: '\r\n' });
+port.pipe(parser);   
 
-const parser = new Readline();
-port.pipe(parser);    
-
-module.exports = port;
+module.exports = {port, parser};
