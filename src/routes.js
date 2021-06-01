@@ -8,14 +8,15 @@ const routes = Router();
 let temperature;
 
 port.on("open",()=>{
-    console.log("Comunicando...");
+    console.log("Comunicando com a porta serial...");
 });
 parser.on("data", function(data) {
-    temperature = data;
-    console.log("entrou");
-    if(temperature!=0){
-        io.emit("temperature", temperature);
-        console.log(temperature); // teste para saber se tá entrando aqui;
+    if(data=="FLAG"){
+        io.emit("flag",true);
+    }
+    else if(data!="FLAG"){
+        io.emit("temperature", data);
+        console.log(data);
     }
 });
 
