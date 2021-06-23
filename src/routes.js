@@ -1,9 +1,14 @@
 const { Router } = require('express');
 const dataController = require('./Controller/dataController');
+const SessionController = require('./Controller/SessionController');
 const {port , parser} = require('./connections/SerialConnection');
-const io  = require('socket.io')();
+const io  = require('socket.io')({
+    cors: {
+      origin: "http://localhost:3000",
+      }
+  });
 
-io.listen(3000);
+io.listen(3334);
 
 const routes = Router();
 
@@ -21,8 +26,9 @@ parser.on("data", function(data) {
     }
 });
 
-routes.post('/id', dataController.store); 
-routes.get('/id', dataController.index);
-routes.get('/search',dataController.show)
+///routes.post('/id', dataController.store); 
+///routes.get('/id', dataController.index);
+routes.get('/search',dataController.show);
+routes.post('/', SessionController.create);
 
 module.exports = routes;
