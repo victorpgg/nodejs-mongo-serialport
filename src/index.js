@@ -12,6 +12,4 @@ const io = require('socket.io')(server);
 
 app.use(routes);
 app.listen(3333);
-
-
 module.exports = { io }; 
