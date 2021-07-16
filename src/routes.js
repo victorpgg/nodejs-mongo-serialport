@@ -30,5 +30,4 @@ parser.on("data", function(data) {
 ///routes.get('/id', dataController.index);
 routes.get('/search',dataController.show);
 routes.post('/', SessionController.create);
-
 module.exports = routes;
