@@ -1,12 +1,16 @@
 const { Router } = require('express');
 const dataController = require('./Controller/dataController');
-const SessionController = require('./Controller/SessionController');
 const {port , parser} = require('./connections/SerialConnection');
 const io  = require('socket.io')({
     cors: {
       origin: "http://localhost:3000",
       }
   });
+
+const tempStorage = {
+    id: null,
+    flag: false
+};
 
 io.listen(3334);
 
@@ -16,12 +20,12 @@ port.on("open",()=>{
     console.log("Comunicando com a porta serial...");
 });
 parser.on("data", function(data) {
-    if(data=="FLAG"){
-        console.log(data);
+    if((data=="FLAG")&&(tempStorage.id!=null)){
         io.emit("flag",true);
+        tempStorage.flag = true;
     }
     else if(data!="FLAG"){
-        io.emit("temperature", data);
+        if((tempStorage.flag)&&(tempStorage.id)){ io.emit("temperature", data);}
         console.log(data);
     }
 });
@@ -29,5 +33,9 @@ parser.on("data", function(data) {
 ///routes.post('/id', dataController.store); 
 ///routes.get('/id', dataController.index);
 routes.get('/search',dataController.show);
-routes.post('/', SessionController.create);
+routes.post('/', (req, res) => { 
+    tempStorage.id = req.body;
+    console.log(tempStorage.id);
+    return console.log('ok');
+});
 module.exports = routes;

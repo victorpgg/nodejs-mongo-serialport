@@ -18,7 +18,7 @@ module.exports =
         return res.json(Data)
     },
     async show(req,res){
-        const id = req.query;
+        const {id} = req.query;
         const Data = await data.find(id);
         return res.json(Data);
     }
