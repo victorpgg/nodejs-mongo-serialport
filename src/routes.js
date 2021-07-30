@@ -25,8 +25,24 @@ parser.on("data", function(data) {
         tempStorage.flag = true;
     }
     else if(data!="FLAG"){
-        if((tempStorage.flag)&&(tempStorage.id)){ io.emit("temperature", data);}
-        console.log(data);
+        if((tempStorage.flag)&&(tempStorage.id))
+        { 
+            io.emit(async () => {
+                    const id = tempStorage.id;
+                    const temperature = data;
+                     const Dados = await data.create({
+                        id,
+                        temperature,
+                        //date,
+                });
+                return res.json(Dados);}
+                );
+        }  
+        
+        else
+        {
+            io.emit("temperature", data);
+        }
     }
 });
 
