@@ -1,5 +1,8 @@
 const { Router } = require('express');
+
 const dataController = require('./Controller/dataController');
+const data = require('../models/data');
+
 const {port , parser} = require('./connections/SerialConnection');
 const io  = require('socket.io')({
     cors: {
@@ -30,7 +33,7 @@ parser.on("data", function(data) {
             io.emit(async () => {
                     const id = tempStorage.id;
                     const temperature = data;
-                     const Dados = await data.create({
+                    const Dados = await data.create({
                         id,
                         temperature,
                         //date,
