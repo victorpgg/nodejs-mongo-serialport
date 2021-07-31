@@ -3,7 +3,7 @@ const mongoose = require( 'mongoose' );
 const DataSchema = new mongoose.Schema({
     id: Number,
     temperature: String,
-    date: String,
+    date: Date,
     version: Number,
 });
 

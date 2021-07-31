@@ -1,7 +1,6 @@
 const { Router } = require('express');
-
 const dataController = require('./Controller/dataController');
-const data = require('../models/data');
+const db = require('./models/data');
 
 const {port , parser} = require('./connections/SerialConnection');
 const io  = require('socket.io')({
@@ -12,11 +11,11 @@ const io  = require('socket.io')({
 
 const tempStorage = {
     id: null,
-    flag: false
+    flag: false,
+    version: null
 };
 
 io.listen(3334);
-
 const routes = Router();
 
 port.on("open",()=>{
@@ -33,10 +32,11 @@ parser.on("data", function(data) {
             io.emit(async () => {
                     const id = tempStorage.id;
                     const temperature = data;
-                    const Dados = await data.create({
+                    const date = Date.now();
+                    const Dados = await db.create({
                         id,
                         temperature,
-                        //date,
+                        date
                 });
                 return res.json(Dados);}
                 );
@@ -48,12 +48,17 @@ parser.on("data", function(data) {
         }
     }
 });
-
-///routes.post('/id', dataController.store); 
-///routes.get('/id', dataController.index);
 routes.get('/search',dataController.show);
-routes.post('/', (req, res) => { 
+routes.post('/', async (req, res) => { 
     tempStorage.id = req.body;
+    await db.findOne({'id': tempStorage.id}).sort({ date: -1 }).limit(1).exec(function(err, res){
+        if(err){
+            tempStorage.version = 1;
+        }
+        else{
+            console.log(res)
+        }
+    });
     console.log(tempStorage.id);
     return console.log('ok');
 });
