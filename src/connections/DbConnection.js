@@ -1,4 +1,4 @@
-const data = require('../models/data');
+const mongoose = require('mongoose');
 db = getConnect();
 
 async function getConnect(){

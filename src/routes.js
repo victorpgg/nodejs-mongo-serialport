@@ -29,17 +29,16 @@ parser.on("data", function(data) {
     else if(data!="FLAG"){
         if((tempStorage.flag)&&(tempStorage.id))
         { 
-            io.emit(async () => {
-                    const id = tempStorage.id;
-                    const temperature = data;
-                    const date = Date.now();
-                    const Dados = await db.create({
-                        id,
-                        temperature,
-                        date
-                });
-                return res.json(Dados);}
-                );
+            const id = tempStorage.id;
+            const temperature = data;
+            const date = Date.now();
+            const version = tempStorage.version;
+            db.create({
+                id,
+                temperature,
+                date,
+                version
+            });
         }  
         
         else
@@ -50,13 +49,17 @@ parser.on("data", function(data) {
 });
 routes.get('/search',dataController.show);
 routes.post('/', async (req, res) => { 
-    tempStorage.id = req.body;
+    tempStorage.id = req.body.id;
     await db.findOne({'id': tempStorage.id}).sort({ date: -1 }).limit(1).exec(function(err, res){
         if(err){
-            tempStorage.version = 1;
+            console.log("Deu erro meu rei!");
         }
         else{
-            console.log(res)
+            if(res) tempStorage.version=res.version+1;
+            else{
+                tempStorage.version = 1;
+                console.log(tempStorage.version);
+            }
         }
     });
     console.log(tempStorage.id);
