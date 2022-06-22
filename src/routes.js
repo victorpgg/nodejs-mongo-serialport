@@ -30,7 +30,7 @@ parser.on("data", function(data) {
         if((tempStorage.flag)&&(tempStorage.id))
         { 
             const id = tempStorage.id;
-            const temperature = data;
+            const temperature = parseFloat(data);
             const date = Date.now();
             const version = tempStorage.version;
             db.create({
@@ -39,6 +39,9 @@ parser.on("data", function(data) {
                 date,
                 version
             });
+            io.emit("Chart", {temperature: temperature, /*time: Date.UTC()*/ })
+            io.emit("temperature", data);
+            console.log("temperature", data);
         }  
         
         else
@@ -55,7 +58,11 @@ routes.post('/', async (req, res) => {
             console.log("Deu erro meu rei!");
         }
         else{
-            if(res) tempStorage.version=res.version+1;
+            if(res) {
+                tempStorage.version=res.version+1;
+                console.log(tempStorage.version);
+                console.log('bateu aqui');
+            }
             else{
                 tempStorage.version = 1;
                 console.log(tempStorage.version);
