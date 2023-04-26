@@ -1,5 +1,4 @@
 const { Router } = require('express');
-const dataController = require('./Controller/dataController');
 const db = require('./models/data');
 
 const {port , parser} = require('./connections/SerialConnection');
@@ -50,7 +49,6 @@ parser.on("data", function(data) {
         }
     }
 });
-routes.get('/search',dataController.show);
 routes.post('/', async (req, res) => { 
     tempStorage.id = req.body.id;
     await db.findOne({'id': tempStorage.id}).sort({ date: -1 }).limit(1).exec(function(err, res){
