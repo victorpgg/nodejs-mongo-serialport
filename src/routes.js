@@ -1,4 +1,4 @@
-const { Router } = require('express');
+const { Router } = require('express');git
 const db = require('./models/data');
 
 const {port , parser} = require('./connections/SerialConnection');
@@ -40,7 +40,6 @@ parser.on("data", function(data) {
             });
             io.emit("Chart", {temperature: temperature, /*time: Date.UTC()*/ })
             io.emit("temperature", data);
-            console.log("temperature", data);
         }  
         
         else
@@ -53,21 +52,17 @@ routes.post('/', async (req, res) => {
     tempStorage.id = req.body.id;
     await db.findOne({'id': tempStorage.id}).sort({ date: -1 }).limit(1).exec(function(err, res){
         if(err){
-            console.log("Deu erro meu rei!");
+            console.log("Erro na comunicação com o banco de dados");
         }
         else{
             if(res) {
                 tempStorage.version=res.version+1;
-                console.log(tempStorage.version);
-                console.log('bateu aqui');
             }
             else{
                 tempStorage.version = 1;
-                console.log(tempStorage.version);
             }
         }
     });
-    console.log(tempStorage.id);
-    return console.log('ok');
+    return console.log('Peça registrada com sucesso!');
 });
 module.exports = routes;
