@@ -1,4 +1,4 @@
-const { Router } = require('express');git
+const { Router } = require('express');
 const db = require('./models/data');
 
 const {port , parser} = require('./connections/SerialConnection');
@@ -24,6 +24,7 @@ parser.on("data", function(data) {
     if((data=="FLAG")&&(tempStorage.id!=null)){
         io.emit("flag",true);
         tempStorage.flag = true;
+        console.log("FLAG!");
     }
     else if(data!="FLAG"){
         if((tempStorage.flag)&&(tempStorage.id))
@@ -48,6 +49,8 @@ parser.on("data", function(data) {
         }
     }
 });
+
+
 routes.post('/', async (req, res) => { 
     tempStorage.id = req.body.id;
     await db.findOne({'id': tempStorage.id}).sort({ date: -1 }).limit(1).exec(function(err, res){
